@@ -1,0 +1,21 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="50" fill="#2563EB"/>
+
+  <!-- Building pillars -->
+  <rect x="20" y="55" width="12" height="25" rx="2" fill="white"/>
+  <rect x="36" y="42" width="12" height="38" rx="2" fill="white"/>
+  <rect x="52" y="48" width="12" height="32" rx="2" fill="white"/>
+  <rect x="68" y="55" width="12" height="25" rx="2" fill="white"/>
+
+  <!-- Base line -->
+  <rect x="16" y="78" width="68" height="4" rx="2" fill="white"/>
+
+  <!-- Roof triangle on center building -->
+  <polygon points="42,42 42,30 50,22 58,30 58,42" fill="white"/>
+
+  <!-- Checkmark badge -->
+  <circle cx="72" cy="28" r="14" fill="#16A34A"/>
+  <polyline points="64,28 70,34 80,22" stroke="white" stroke-width="3.5"
+    stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>
