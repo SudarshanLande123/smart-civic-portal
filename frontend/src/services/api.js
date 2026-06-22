@@ -1,6 +1,6 @@
 import axios from "axios";
 const api = axios.create({
-    baseURL: "https://smart-civic-portal.onrender.com"
+    baseURL: "https://smart-civic-portal.onrender.com/api"
 });
 
 export default api;
