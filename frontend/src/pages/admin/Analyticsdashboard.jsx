@@ -25,7 +25,7 @@ import {
   getCategoryStatistics,
   getStatusStatistics,
   getMonthlyTrends,
-} from "../../services/analyticsService";
+} from "../../services/Analyticsservice";
 
 const MONTH_NAMES = [
   "", "Jan", "Feb", "Mar", "Apr", "May", "Jun",

@@ -8,7 +8,7 @@ import {
   markNotificationAsRead,
   markAllNotificationsAsRead,
   deleteNotification,
-} from "../../services/notificationService";
+} from "../../services/Notificationservice";
 import { getSocket } from "../../services/socket";
 
 const NotificationBell = () => {
