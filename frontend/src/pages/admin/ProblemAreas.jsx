@@ -15,7 +15,7 @@ import {
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import Loader from "../../components/common/Loader";
 
-import { getTopProblemAreas } from "../../services/analyticsService";
+import { getTopProblemAreas } from "../../services/Analyticsservice";
 
 // Gradient of reds — most complaints = darkest
 const BAR_COLORS = [

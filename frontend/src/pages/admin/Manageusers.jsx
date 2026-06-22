@@ -11,7 +11,7 @@ import {
   activateUser,
   deactivateUser,
   deleteUser,
-} from "../../services/userManagementService";
+} from "../../services/Usermanagementservice";
 
 const roleOptions = ["citizen", "admin", "superadmin"];
 

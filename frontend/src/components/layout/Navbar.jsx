@@ -1,6 +1,6 @@
 import { HiMenu } from "react-icons/hi";
 
-import NotificationBell from "../common/NotificationBell";
+import NotificationBell from "../common/Notificationbell";
 
 const Navbar = ({ setIsOpen }) => {
   return (
