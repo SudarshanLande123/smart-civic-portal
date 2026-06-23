@@ -23,7 +23,13 @@ app.use(helmet());
 
 app.use(morgan("dev"));
 
-app.use(cors());
+app.use(cors({
+  origin:[
+    "http://localhost:5173",
+    "https://smart-civic-portal-frontend.onrender.com"
+  ],
+  credentials: true,
+}));
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
