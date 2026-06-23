@@ -41,3 +41,6 @@ io.on("connection", (socket) => {
 server.listen(PORT, () => {
     console.log(`Server is Running on PORT ${PORT}`);
 });
+
+server.keepAliveTimeout = 120 * 1000;     // 120 seconds
+server.headersTimeout = 120 * 1000;       // 120 seconds
