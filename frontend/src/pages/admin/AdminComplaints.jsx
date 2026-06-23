@@ -1,152 +1,75 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
+import { updateComplaintStatus } from "../../services/complaintService";   // or adminService
 
-import DashboardLayout from "../../components/layout/DashboardLayout";
-import Loader from "../../components/common/Loader";
-import AdminComplaintCard from "../../components/admin/Admincomplaintcard";
-import UpdateStatusModal from "../../components/admin/UpdateStatusModel";
+const UpdateStatusModal = ({ complaint, onClose, onUpdated }) => {
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState(complaint.status);
 
-import {
-  getAllAdminComplaints,
-  filterAdminComplaints,
-} from "../../services/adminService";
+  const handleUpdate = async () => {
+    if (isUpdating || selectedStatus === complaint.status) return;
 
-const categoryOptions = [
-  "Pothole",
-  "Garbage",
-  "Water Leakage",
-  "Street Light",
-  "Drainage",
-  "Illegal Parking",
-  "Public Safety",
-  "Other",
-];
+    setIsUpdating(true);
 
-const statusOptions = [
-  "Submitted",
-  "Under Review",
-  "In Progress",
-  "Resolved",
-  "Rejected",
-];
-
-const AdminComplaints = () => {
-  const [complaints, setComplaints] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const [category, setCategory] = useState("");
-  const [status, setStatus] = useState("");
-
-  const [selectedComplaint, setSelectedComplaint] = useState(null);
-
-  const loadComplaints = async () => {
     try {
-      setLoading(true);
-      const data = await getAllAdminComplaints();
-      setComplaints(data.complaints || data);
+      await updateComplaintStatus(complaint._id, selectedStatus);
+
+      toast.success(`Status updated to ${selectedStatus}`);
+      
+      // Refresh parent list
+      if (onUpdated) onUpdated();
+
+      onClose();
     } catch (error) {
-      console.log(error);
-      toast.error("Failed to load complaints");
+      toast.error(
+        error.response?.data?.message || "Failed to update status"
+      );
     } finally {
-      setLoading(false);
+      setIsUpdating(false);        // ← This was probably missing
     }
   };
-
-  const applyFilters = async () => {
-    try {
-      setLoading(true);
-      const data = await filterAdminComplaints(category, status);
-      setComplaints(data.complaints || data);
-    } catch (error) {
-      console.log(error);
-      toast.error("Filter failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const clearFilters = () => {
-    setCategory("");
-    setStatus("");
-    loadComplaints();
-  };
-
-  useEffect(() => {
-    loadComplaints();
-  }, []);
 
   return (
-    <DashboardLayout>
-      <h1 className="text-2xl font-bold mb-6">Manage Complaints</h1>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-xl shadow-xl max-w-md w-full mx-4">
+        <h2 className="text-xl font-bold mb-4">Update Complaint Status</h2>
+        
+        <p className="mb-4 text-gray-600">
+          <strong>Complaint:</strong> {complaint.title}
+        </p>
 
-      <div className="bg-white p-4 rounded-xl shadow mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
         <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="border rounded-lg p-3"
+          value={selectedStatus}
+          onChange={(e) => setSelectedStatus(e.target.value)}
+          className="w-full border rounded-lg p-3 mb-6"
         >
-          <option value="">All Categories</option>
-          {categoryOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
+          {["Submitted", "Under Review", "In Progress", "Resolved", "Rejected"].map((status) => (
+            <option key={status} value={status}>
+              {status}
             </option>
           ))}
         </select>
 
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          className="border rounded-lg p-3"
-        >
-          <option value="">All Status</option>
-          {statusOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <button
-            onClick={applyFilters}
-            className="flex-1 bg-green-600 text-white rounded-lg p-3"
+            onClick={onClose}
+            className="flex-1 py-3 border rounded-lg hover:bg-gray-50"
+            disabled={isUpdating}
           >
-            Apply Filters
+            Cancel
           </button>
+          
           <button
-            onClick={clearFilters}
-            className="flex-1 border rounded-lg p-3"
+            onClick={handleUpdate}
+            disabled={isUpdating || selectedStatus === complaint.status}
+            className="flex-1 py-3 bg-blue-600 text-white rounded-lg font-medium disabled:opacity-70"
           >
-            Clear
+            {isUpdating ? "Saving..." : "Update Status"}
           </button>
         </div>
       </div>
-
-      {loading ? (
-        <Loader />
-      ) : complaints.length === 0 ? (
-        <p className="text-gray-500 text-sm">No complaints found.</p>
-      ) : (
-        <div className="space-y-4">
-          {complaints.map((complaint) => (
-            <AdminComplaintCard
-              key={complaint._id}
-              complaint={complaint}
-              onUpdateClick={setSelectedComplaint}
-            />
-          ))}
-        </div>
-      )}
-
-      {selectedComplaint && (
-        <UpdateStatusModal
-          complaint={selectedComplaint}
-          onClose={() => setSelectedComplaint(null)}
-          onUpdated={loadComplaints}
-        />
-      )}
-    </DashboardLayout>
+    </div>
   );
 };
 
-export default AdminComplaints;
+export default UpdateStatusModal;
