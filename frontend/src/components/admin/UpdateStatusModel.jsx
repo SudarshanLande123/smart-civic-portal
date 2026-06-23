@@ -27,18 +27,22 @@ const UpdateStatusModal = ({ complaint, onClose, onUpdated }) => {
   };
 
   const handleSubmit = async () => {
+    if (submitting) return;
+
     if (isResolving && files.length === 0 && !complaint.proofMedia?.length) {
       toast.error("Please attach at least one proof image to mark as Resolved");
       return;
     }
 
-    try {
-      setSubmitting(true);
+    setSubmitting(true);
 
+    try {
       if (isResolving && files.length > 0) {
         const formData = new FormData();
         files.forEach((file) => formData.append("proofMedia", file));
-        formData.append("resolutionNote", resolutionNote);
+        if (resolutionNote.trim()) {
+          formData.append("resolutionNote", resolutionNote.trim());
+        }
 
         await uploadResolutionProof(complaint._id, formData);
       } else {
@@ -46,10 +50,17 @@ const UpdateStatusModal = ({ complaint, onClose, onUpdated }) => {
       }
 
       toast.success("Status updated successfully");
-      onUpdated();
+      
+      // Refresh list and close modal
+      if (onUpdated) onUpdated();
       onClose();
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to update status");
+      console.error("Status update error:", error);
+      toast.error(
+        error.response?.data?.message || 
+        error.message || 
+        "Failed to update status"
+      );
     } finally {
       setSubmitting(false);
     }
@@ -76,6 +87,7 @@ const UpdateStatusModal = ({ complaint, onClose, onUpdated }) => {
           value={status}
           onChange={(e) => setStatus(e.target.value)}
           className="w-full border rounded-lg p-3 mb-4"
+          disabled={submitting}
         >
           {statusOptions.map((option) => (
             <option key={option} value={option}>
@@ -96,6 +108,7 @@ const UpdateStatusModal = ({ complaint, onClose, onUpdated }) => {
                 rows="3"
                 placeholder="Describe how this was resolved..."
                 className="w-full border rounded-lg p-3"
+                disabled={submitting}
               />
             </div>
 
@@ -109,6 +122,7 @@ const UpdateStatusModal = ({ complaint, onClose, onUpdated }) => {
                 multiple
                 onChange={handleFileChange}
                 className="w-full text-sm"
+                disabled={submitting}
               />
               {files.length > 0 && (
                 <p className="text-xs text-gray-500 mt-1">
