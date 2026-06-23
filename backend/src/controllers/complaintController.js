@@ -39,17 +39,20 @@ const createComplaint = async (req, res) => {
 
     console.log("Location from req.body:", location);
 
-    await sendEmail(
+    // Non-blocking email
+    sendEmail(
       req.user.email,
       "Complaint Submitted",
       `
-      <h2>Complaint Submitted</h2>
-      <p>Your complaint has been submitted successfully.</p>
-      <strong>Complaint: ${complaint.title}</strong>
-      <br><br>
-      <p>Developed by Sudarshan</p>
-      `,
-    );
+  <h2>Complaint Submitted</h2>
+  <p>Your complaint has been submitted successfully.</p>
+  <strong>Complaint: ${complaint.title}</strong>
+  <br><br>
+  <p>Developed by Sudarshan</p>
+  `,
+    ).catch((err) => {
+      console.error("Complaint submission email failed:", err.message);
+    });
 
     res.status(201).json({
       message: "Complaint created Successfully",

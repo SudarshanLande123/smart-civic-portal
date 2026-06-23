@@ -1,26 +1,33 @@
 import api from "./api";
 
 export const createComplaint = async (formData) => {
-  const response = await api.post("/complaints", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  try {
+    const response = await api.post("/complaints", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        // Token should be automatically added by the api interceptor
+      },
+    });
 
-  return response.data;
+    return response.data;
+  } catch (error) {
+    console.error("Create Complaint Error:", error.response?.data || error.message);
+    throw error;
+  }
 };
 
+// Other functions remain the same...
 export const getAllComplaints = async () => {
   const response = await api.get("/complaints");
-
   return response.data;
 };
 
 export const getComplaintById = async (id) => {
   const response = await api.get(`/complaints/${id}`);
-
   return response.data;
 };
+
+// ... rest of your exports
 
 export const toggleUpvote = async (complaintId) => {
   const response = await api.put(`/complaints/upvote/${complaintId}`);

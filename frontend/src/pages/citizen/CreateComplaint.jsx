@@ -49,6 +49,7 @@ const CreateComplaint = () => {
       reset();
       setFiles([]);
 
+      // Navigate to the new complaint
       const complaintId = response?.complaint?._id || response?._id;
       if (complaintId) {
         navigate(`/complaints/${complaintId}`);
@@ -56,46 +57,68 @@ const CreateComplaint = () => {
         navigate("/complaints");
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed To Submit");
+      console.error("Submit error:", error);
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed To Submit Complaint"
+      );
+    } finally {
+      // This is crucial - always stop the loading state
     }
   };
+
 
   return (
     <DashboardLayout>
       <div className="bg-white p-6 rounded-xl shadow max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8 text-gray-800">Create New Complaint</h1>
+        <h1 className="text-3xl font-bold mb-8 text-gray-800">
+          Create New Complaint
+        </h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Title */}
           <div>
-            <label className="block mb-2 font-medium text-gray-700">Title</label>
+            <label className="block mb-2 font-medium text-gray-700">
+              Title
+            </label>
             <input
               className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Brief title of your complaint"
               {...register("title", { required: "Title is required" })}
             />
             {errors.title && (
-              <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.title.message}
+              </p>
             )}
           </div>
 
           {/* Description */}
           <div>
-            <label className="block mb-2 font-medium text-gray-700">Description</label>
+            <label className="block mb-2 font-medium text-gray-700">
+              Description
+            </label>
             <textarea
               rows="5"
               className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Describe your complaint in detail..."
-              {...register("description", { required: "Description is required" })}
+              {...register("description", {
+                required: "Description is required",
+              })}
             />
             {errors.description && (
-              <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.description.message}
+              </p>
             )}
           </div>
 
           {/* Category */}
           <div>
-            <label className="block mb-2 font-medium text-gray-700">Category</label>
+            <label className="block mb-2 font-medium text-gray-700">
+              Category
+            </label>
             <select
               className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               {...register("category", { required: "Category is required" })}
@@ -108,27 +131,34 @@ const CreateComplaint = () => {
               ))}
             </select>
             {errors.category && (
-              <p className="text-red-500 text-sm mt-1">{errors.category.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.category.message}
+              </p>
             )}
           </div>
 
           {/* Address */}
           <div>
-            <label className="block mb-2 font-medium text-gray-700">Address / Location</label>
+            <label className="block mb-2 font-medium text-gray-700">
+              Address / Location
+            </label>
             <input
               className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Location of the complaint"
               {...register("address", { required: "Address is required" })}
             />
             {errors.address && (
-              <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.address.message}
+              </p>
             )}
           </div>
 
           {/* Upload Images */}
           <div>
             <label className="block mb-2 font-medium text-gray-700">
-              Upload Images <span className="text-gray-400 font-normal">(optional)</span>
+              Upload Images{" "}
+              <span className="text-gray-400 font-normal">(optional)</span>
             </label>
             <input
               type="file"
