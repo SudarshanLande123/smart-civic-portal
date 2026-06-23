@@ -28,31 +28,19 @@ const registerUser = async (req, res) => {
 
     //for sending the email
 
-    // await sendEmail(
-    //   user.email,
-
-    //   "Welcome to Civic Portal",
-    //   `
-    //         <h2>Welcome ${user.name}</h2>
-
-    //         <p>
-    //         Thank you for registering
-    //         on Smart Civic Portal.
-    //         </p>
-
-    //         <p>
-    //   We are glad to have you as a member of our community.
-    // </p>
-
-    // <br>
-
-    // <p>
-    //   Regards,<br>
-    //   <strong>Sudarshan Lande</strong><br>
-    //   Developer, Smart Civic Portal
-    // </p>
-    //         `,
-    // );
+    sendEmail(
+      user.email,
+      "Welcome to Civic Portal",
+      `
+        <h2>Welcome ${user.name}!</h2>
+        <p>Thank you for registering on Smart Civic Portal.</p>
+        <p>We are glad to have you as a member of our community.</p>
+        <br>
+        <p>Regards,<br><strong>Sudarshan Lande</strong><br>Developer, Smart Civic Portal</p>
+      `,
+    ).catch((err) => {
+      console.error("Welcome email failed:", err.message);
+    });
     res.status(201).json({
       message: "User Registered Succeessfully",
       _id: user._id,
